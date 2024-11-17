@@ -1,0 +1,43 @@
+/*
+Something interesting here is that the notify() and wait() methods always need a
+synchronized Object attached to them. This is because the intrinsic nature of
+those methods.
+notify() and wait() and summoned on an Object monitor. And to access that monitor
+we need a synchronized block. Doesn't matter if it's a synchronized method or Object.
+
+Furthermore, we need to specify from which context they are called upon and hence
+where they pertain. So if we were to simply use "notify()" and "wait()", they are
+called upon "this." Object. In our case, the respective threads. So they are blocked
+on two different Object monitors.
+We need to offer the same object monitor to both threads so they can properly call
+notify() and wait().
+
+Each objet monitor has their own wait sets. When objets release their object monitors
+(akka they call wait()), they enter the wait set. Only when another object notifies them
+using notify() upon the SAME object monitor, they will then wake up.
+
+Object monitors do not share wait sets. So it is important to know upon what object
+monitor are we releasing control when calling wait() and which wait set we want to
+call when using notify().
+
+The same is applied to synchronized methods. Synchronized methods are called on the
+"this." object; the same object that the method is from. However, it is important
+to note a substantial difference between a normal synchronized method and a static
+synchronized method.
+
+While a normal synchronized method releases the object monitor from that same object,
+a static synchronized method releases the object monitor for the class itself. So in
+the first case, every instance of that object has their own object monitor. While in
+the second case, that object monitor is shared across all existences of the class.
+*/
+
+/*
+yield() is a static method that tells the thread scheduler that the thread that called it
+is willing (but not necessarily) to give up control of the resources it has been given.
+
+It is merely a suggestion. It is the thread scheduler who will decide if the control will
+be taken or not from that thread.
+
+Usually the thread that will be given control is one with the same or higher priority
+as the one who just gave up control.
+*/
